@@ -1,16 +1,20 @@
 import express, { Request, Response } from "express"
 import usermodel from "../model/usermodel"
+import crypto from "crypto"
 
-export const userregister = (req: Request, res: Response)=> {
+export const userregister = async (req: Request, res: Response)=> {
     try {
-        const { userName, email, password, token, verified } = req.body
+        const { userName, email, password, token, verified, otp } = req.body
+        const getToken = await crypto.randomBytes(32)
+        const getOtp = await crypto.randomBytes(2)
         
-        const user = usermodel.create({
+        const user = await usermodel.create({
             userName,
             email,
             password,
-            token,
-            verified
+            token: getToken,
+            verified,
+            otp: getOtp
         })
 
         return res.status(200).json({

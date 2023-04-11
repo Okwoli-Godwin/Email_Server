@@ -5,6 +5,7 @@ interface IUser {
     email: string;
     password: string;
     token: string;
+    otp: string;
     verified: boolean;
 }
 
@@ -25,6 +26,10 @@ const usermodel = new mongoose.Schema(
         },
 
         token: {
+            type: String
+        },
+
+        otp: {
             type: String
         },
 
