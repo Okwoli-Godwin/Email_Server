@@ -26,15 +26,19 @@ export const verifyAccount = async (user: any) => {
             }
         })
 
-        const mailOptions = {
-            from: "MyMail <okwolig60@gmail.com>",
-            to: user.email,
-            subject: "Account Verification",
-            html: `<div>Welcome to easyHr platform ${user.userName}</div>`
-        }
-
+        const mailerOption = {
+      from: "Easy Pay💰💸 <okwolig60@gmail.com@gmail.com>",
+      to: user.email,
+      subject: "Account verification",
+      html: `<div>Welcome ${user.userName} 
+      <a href="http://localhost:3111/api/user/${user._id}/verified">verified</a>
+      <br/>
+      <br/>
+      ${user.otp}
+        </div>`,
+    };
         transporter
-            .sendMail(mailOptions)
+            .sendMail(mailerOption)
             .then(() => {
             console.log("email sent")
             })
@@ -43,5 +47,49 @@ export const verifyAccount = async (user: any) => {
         })
     } catch (error) {
         console.log()
+    }
+}
+
+export const resetPassword = async (user: any) => {
+    try {
+        oAuth.setCredentials({ access_token: GOOGLE_REFRESHTOKEN })
+        const getToken: any = (await oAuth.getAccessToken()).token;
+
+        const transporter = nodemailer.createTransport({
+            service: "gmail",
+
+            auth: {
+                type: "OAuth2",
+                user: "okwolig60@gmail.com",
+                clientId: GOOGLE_ID,
+                clientSecret: GOOGLE_SECRET,
+                refreshToken: GOOGLE_REFRESHTOKEN,
+                accessToken:
+                "ya29.a0Ael9sCMVmDHO0AksTvP0kHRQnp4jcy2IeYM2rO50QFcF7O4eIMLUyWqbaZhkN5J3CjPzfxWbt805AWoUEgkw69-KWJJHOjU_MPi9vEY51gTurTayXtFr0eZtjPp3IOdv0PeLb8-BYiq4bg4nnAiiCGUpCKHKaCgYKAf4SARISFQF4udJh5lHKvTa9LURx0Vvfo1Vjww0163"
+            }
+        })
+
+        const mailerOption = {
+            from: "Easyhr <okwolig60@gmail.com>",
+            to: user.email,
+            subject: "Reset password Request",
+            html: `<div>Welcome ${user.userName}
+             <a href="http://localhost:3111/api/user/${user._id}/${user.token}/reset-password">verified</a>
+            <br/>
+            <br/>
+            ${user.OTP}
+            </div>`,
+        }
+
+        transporter
+      .sendMail(mailerOption)
+      .then(() => {
+        console.log("Email Send");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    } catch (error) {
+        console.log(error)
     }
 }

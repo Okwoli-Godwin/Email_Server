@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const LiveURL = "mongodb+srv://Email_Server:Email_Server@cluster0.8usbdhw.mongodb.net/?retryWrites=true&w=majority"
+const LiveURL = "mongodb://localhost/emailserver"
 
 export const dbConnection = async() => {
     try {
