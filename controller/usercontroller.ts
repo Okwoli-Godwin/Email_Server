@@ -79,3 +79,69 @@ export const verifyuser = async (req: Request, res: Response) => {
     });
     }
 }
+
+export const requestPassword = async (req: Request, res: Response) => {
+    try {
+        const { email } = req.body;
+        const user = await usermodel.findOne({ email });
+        console.log("this is user :", user);
+        console.log("this is usertoken", user?.token)
+        const token = crypto.randomBytes(32).toString("hex")
+        if (user?.token === "" && user?.verified === true) {
+            const userData = await usermodel.findByIdAndUpdate(
+                user?._id,
+                { token: token },
+                {new: true}
+            )
+
+            return res.status(200).json({
+                message: "an email has been on your request",
+                data: userData,
+                token: token,
+                user: user
+            })
+        } else {
+            return res.status(200).json({
+                message: "you dont meet the set credentials"
+            })
+        }
+    } catch (error) {
+        return res.sendStatus(400).json({
+            message: "error"
+        })
+    }
+}
+
+
+
+export const changeUserPassword = async (req: Request, res: Response) => {
+    try {
+           const { password } = req.body;
+
+    const { userId, token } = req.params;
+
+        const user = await usermodel.findById(userId); 
+        
+        if (user) {
+            if (user?.token === "" && user?.verified === true) {
+                const theUser = await usermodel.findByIdAndUpdate(
+            userId,
+            { password, token: "" },
+            { new: true }
+          );
+  
+          return res.json({
+              message: "Your password has been changed, SUCCESSFULLY!",
+              data: theUser,
+            }); 
+            }
+        } else {
+        return res.json({ message: "Please just go" });
+      }
+
+    } catch (error) {
+         return res.status(400).json({
+      message: "error",
+    });
+    }
+}
